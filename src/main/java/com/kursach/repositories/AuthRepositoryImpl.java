@@ -14,7 +14,6 @@ import java.sql.SQLException;
 @Service
 public class AuthRepositoryImpl implements AuthRepository {
 
-
     private JdbcTemplate jdbcTemplate;
 
     @Autowired

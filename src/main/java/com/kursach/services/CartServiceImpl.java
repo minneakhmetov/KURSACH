@@ -5,6 +5,7 @@
  */
 
 package com.kursach.services;
+import com.kursach.dto.ProductCartDto;
 import com.kursach.models.ProductCart;
 import com.kursach.repositories.CartRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,8 +22,8 @@ public class CartServiceImpl implements CartService {
         this.repository =  repository;
     }
 
-    public void addToCart(ProductCart cart){
-        repository.create(cart);
+    public void addToCart(ProductCartDto cart){
+        repository.create(cart.getUserId(), cart.getProductId());
     }
 
     public List<ProductCart> getProductsInCart(Integer id){

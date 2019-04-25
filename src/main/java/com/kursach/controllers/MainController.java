@@ -1,6 +1,7 @@
 package com.kursach.controllers;
 
 import com.kursach.app.Constants;
+import com.kursach.dto.ProductCartDto;
 import com.kursach.dto.UserDto;
 import com.kursach.forms.ServiceForm;
 import com.kursach.models.Order;
@@ -70,7 +71,7 @@ public class MainController {
 
     @PostMapping("/cart")
     public ResponseEntity<?> addToCart(@RequestParam("productId") Long productId, @CookieValue("vk_id") Integer userId) {
-        cartService.addToCart(ProductCart.builder()
+        cartService.addToCart(ProductCartDto.builder()
                 .productId(productId)
                 .userId(userId)
                 .build());

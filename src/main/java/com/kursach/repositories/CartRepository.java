@@ -11,7 +11,7 @@ import com.kursach.models.ProductCart;
 import java.util.List;
 
 public interface CartRepository {
-    void create(ProductCart cart);
+    void create(Integer userId, Long productId);
     List<ProductCart> readProductsByUser(Integer userId);
     void delete();
     void deleteFromCart(Long productId, Integer userId);

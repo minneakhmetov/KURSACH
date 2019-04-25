@@ -13,6 +13,7 @@ import com.kursach.repositories.AuthRepository;
 import com.kursach.repositories.UserRepository;
 import com.kursach.utils.VKAuthService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
 
@@ -23,6 +24,7 @@ import static com.kursach.dto.UserDto.from;
 @Component
 public class LoginServiceImpl implements LoginService {
     @Autowired
+    @Qualifier("userRepositoryHibernateImpl")
     private UserRepository repository;
 
     @Autowired

@@ -5,12 +5,13 @@
  */
 
 package com.kursach.services;
+import com.kursach.dto.ProductCartDto;
 import com.kursach.models.ProductCart;
 
 import java.util.List;
 
 public interface CartService {
-    void addToCart(ProductCart cart);
+    void addToCart(ProductCartDto cart);
 
     List<ProductCart> getProductsInCart(Integer id);
 

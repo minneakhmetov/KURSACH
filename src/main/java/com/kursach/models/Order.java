@@ -25,11 +25,11 @@ public class Order {
         for(ProductCart productCart: productCarts){
            orders.add(Order.builder()
                    .price(productCart.getPrice())
-                   .seller(productCart.getUserId())
+                   .seller(productCart.getUser().getVkId())
                    .product(productCart.getProductId())
-                   .name(productCart.getName())
+                   .name(productCart.getUser().getName())
                    .buyer(buyer)
-                   .avatar(productCart.getAvatar())
+                   .avatar(productCart.getUser().getPhotoURL())
                    .activity(productCart.getActivity())
                    .build());
         }

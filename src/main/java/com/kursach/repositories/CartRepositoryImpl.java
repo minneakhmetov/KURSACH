@@ -7,6 +7,7 @@
 package com.kursach.repositories;
 
 import com.kursach.models.ProductCart;
+import com.kursach.models.User;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
@@ -14,6 +15,7 @@ import org.springframework.jdbc.datasource.DriverManagerDataSource;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
+
 @Component
 public class CartRepositoryImpl implements CartRepository {
 
@@ -24,14 +26,22 @@ public class CartRepositoryImpl implements CartRepository {
         jdbcTemplate = new JdbcTemplate(dataSource);
     }
 
-    private RowMapper<ProductCart> rowMapperCart = (resultSet, i) -> ProductCart.builder()
-            .avatar(resultSet.getString("photo_url"))
-            .id(resultSet.getLong("id"))
-            .name(resultSet.getString("name") + " " + resultSet.getString("surname"))
-            .price(resultSet.getString("price"))
-            .userId(resultSet.getInt("user_id"))
-            .productId(resultSet.getLong("product_id"))
-            .build();
+    private RowMapper<ProductCart> rowMapperCart = (resultSet, i) -> {
+        User user = User.builder()
+                .name(resultSet.getString("name"))
+                .photoURL(resultSet.getString("photo_url"))
+                .surname(resultSet.getString("surname"))
+                .vkId(resultSet.getInt("user_id"))
+                .build();
+        return
+            ProductCart.builder()
+                    .id(resultSet.getLong("id"))
+                    .price(resultSet.getString("price"))
+                    .productId(resultSet.getLong("product_id"))
+                    .user(user)
+                    .activity(resultSet.getString("activity"))
+                    .build();
+    };
 
     private static final String SQL_INSERT =
             "INSERT INTO cart (user_id, product_id) VALUES (?, ?)";
@@ -48,22 +58,23 @@ public class CartRepositoryImpl implements CartRepository {
     private static final String SQL_DELETE_FROM_CART_ALL =
             "DELETE FROM cart where user_id = ?";
 
-    public void create(ProductCart cart){
-        jdbcTemplate.update(SQL_INSERT, cart.getUserId(), cart.getProductId());
+    public void create(Integer userId, Long productId) {
+        jdbcTemplate.update(SQL_INSERT, userId, productId);
     }
 
-    public List<ProductCart> readProductsByUser(Integer userId){
+    public List<ProductCart> readProductsByUser(Integer userId) {
         return jdbcTemplate.query(SQL_SELECT, rowMapperCart, userId);
     }
 
-    public void delete(){
+    public void delete() {
         jdbcTemplate.update(SQL_DELETE);
     }
 
-    public void deleteFromCart(Long cartId, Integer userId){
+    public void deleteFromCart(Long cartId, Integer userId) {
         jdbcTemplate.update(SQL_DELETE_FROM_CART, cartId, userId);
     }
-    public void deleteAllCart(Integer userId){
+
+    public void deleteAllCart(Integer userId) {
         jdbcTemplate.update(SQL_DELETE_FROM_CART_ALL, userId);
     }
 

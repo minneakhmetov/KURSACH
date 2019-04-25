@@ -15,12 +15,22 @@ import org.springframework.context.annotation.PropertySource;
 import org.springframework.core.env.Environment;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.datasource.DriverManagerDataSource;
+import org.springframework.orm.jpa.JpaTransactionManager;
+import org.springframework.orm.jpa.JpaVendorAdapter;
+import org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean;
+import org.springframework.orm.jpa.vendor.HibernateJpaVendorAdapter;
+import org.springframework.transaction.PlatformTransactionManager;
 import org.springframework.web.servlet.ViewResolver;
 import org.springframework.web.servlet.config.annotation.EnableWebMvc;
 import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurerAdapter;
 import org.springframework.web.servlet.view.freemarker.FreeMarkerConfigurer;
 import org.springframework.web.servlet.view.freemarker.FreeMarkerViewResolver;
+
+import javax.persistence.EntityManager;
+import javax.persistence.EntityManagerFactory;
+import java.util.Arrays;
+import java.util.Properties;
 
 @Configuration
 @ComponentScan("com.kursach")
@@ -72,6 +82,41 @@ public class AppConfig extends WebMvcConfigurerAdapter {
         dataSource.setDriverClassName(environment.getProperty("db.driverClassName"));
         return dataSource;
     }
+
+    @Bean
+    public PlatformTransactionManager transactionManager() {
+        JpaTransactionManager transactionManager
+                = new JpaTransactionManager();
+        transactionManager.setEntityManagerFactory(
+                entityManagerFactory().getObject());
+        return transactionManager;
+    }
+    private Properties hibernateProperties() {
+        Properties hibernateProperties = new Properties();
+        String[] propsNames = {"hibernate.hbm2ddl.auto", "hibernate.dialect",
+                "hibernate.show_sql"};
+        Arrays.stream(propsNames).forEach(propName ->
+                hibernateProperties.setProperty(propName,
+                        environment.getProperty(propName)));
+        return hibernateProperties;
+    }
+
+    @Bean
+    public LocalContainerEntityManagerFactoryBean entityManagerFactory() {
+        LocalContainerEntityManagerFactoryBean em
+                = new LocalContainerEntityManagerFactoryBean();
+        em.setDataSource(driverManagerDataSource());
+        em.setPackagesToScan("com.kursach.models");
+
+        JpaVendorAdapter vendorAdapter = new HibernateJpaVendorAdapter();
+        em.setJpaVendorAdapter(vendorAdapter);
+        em.setJpaProperties(hibernateProperties());
+
+        return em;
+    }
+
+
+
 
 
 

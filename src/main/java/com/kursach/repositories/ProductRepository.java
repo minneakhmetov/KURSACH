@@ -6,7 +6,6 @@
 
 package com.kursach.repositories;
 
-import com.kursach.dto.ProductDto;
 import com.kursach.models.Product;
 
 import java.util.List;
