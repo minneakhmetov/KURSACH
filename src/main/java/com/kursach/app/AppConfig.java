@@ -1,19 +1,11 @@
 package com.kursach.app;
 
-import com.kursach.repositories.UserRepository;
-import com.kursach.repositories.UserRepositoryImpl;
-import com.kursach.services.LoginService;
-import com.kursach.services.LoginServiceImpl;
-import org.hibernate.Session;
-import org.hibernate.SessionFactory;
-import org.hibernate.Transaction;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.PropertySource;
 import org.springframework.core.env.Environment;
-import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.datasource.DriverManagerDataSource;
 import org.springframework.orm.jpa.JpaTransactionManager;
 import org.springframework.orm.jpa.JpaVendorAdapter;
@@ -26,9 +18,6 @@ import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurerAdapter;
 import org.springframework.web.servlet.view.freemarker.FreeMarkerConfigurer;
 import org.springframework.web.servlet.view.freemarker.FreeMarkerViewResolver;
-
-import javax.persistence.EntityManager;
-import javax.persistence.EntityManagerFactory;
 import java.util.Arrays;
 import java.util.Properties;
 
@@ -37,6 +26,7 @@ import java.util.Properties;
 @EnableWebMvc
 @PropertySource("classpath:application.properties")
 public class AppConfig extends WebMvcConfigurerAdapter {
+
     @Autowired
     private Environment environment;
 
@@ -64,14 +54,6 @@ public class AppConfig extends WebMvcConfigurerAdapter {
         registry.addResourceHandler("/js/**").addResourceLocations("/WEB-INF/js/");
         registry.addResourceHandler("/pictures/**").addResourceLocations("/WEB-INF/pictures/");
     }
-
-//    @Bean
-//    public ViewResolver viewResolver() {
-//        InternalResourceViewResolver viewResolver = new InternalResourceViewResolver();
-//        viewResolver.setPrefix("/WEB-INF/views/jsp/");
-//        viewResolver.setSuffix(".jsp");
-//        return viewResolver;
-//    }
 
     @Bean
     public DriverManagerDataSource driverManagerDataSource() {
@@ -114,18 +96,5 @@ public class AppConfig extends WebMvcConfigurerAdapter {
 
         return em;
     }
-
-
-
-
-
-
-//    @Bean
-//    public LoginService loginService(){
-//        return new LoginServiceImpl();
-//    }
-
-
-
 
 }

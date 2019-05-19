@@ -6,7 +6,6 @@
 
 package com.kursach.utils;
 
-import com.kursach.app.Constants;
 import com.kursach.dto.UserDto;
 import com.vk.api.sdk.client.Lang;
 import com.vk.api.sdk.client.TransportClient;
@@ -26,15 +25,17 @@ public class VKAuthService {
     private VkApiClient vk;
     private UserAuthResponse authResponse;
 
+
+
     @Getter
     private Integer userId;
 
     @SneakyThrows
-    public VKAuthService(String code) {
+    public VKAuthService(Integer appId, String clientSecret, String redirectUrl, String code) {
         TransportClient transportClient = HttpTransportClient.getInstance();
         vk = new VkApiClient(transportClient);
         authResponse = vk.oauth()
-                .userAuthorizationCodeFlow(Constants.APP_ID, Constants.CLIENT_SECRET, Constants.REDIRECT_URI + "/login", code)
+                .userAuthorizationCodeFlow(appId, clientSecret, redirectUrl + "/login", code)
                 .execute();
         userId = authResponse.getUserId();
     }

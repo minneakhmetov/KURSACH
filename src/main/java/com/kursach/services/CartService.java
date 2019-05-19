@@ -10,7 +10,7 @@ import com.kursach.models.ProductCart;
 
 import java.util.List;
 
-public interface CartService {
+public interface CartService extends Service {
     void addToCart(ProductCartDto cart);
 
     List<ProductCart> getProductsInCart(Integer id);

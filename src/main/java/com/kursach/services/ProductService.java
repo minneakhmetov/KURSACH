@@ -11,7 +11,7 @@ import com.kursach.models.Product;
 
 import java.util.List;
 
-public interface ProductService {
+public interface ProductService extends Service {
     List<Product> getAll();
     Product read(Long id);
     List<Product> find(String string);

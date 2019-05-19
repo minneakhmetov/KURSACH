@@ -5,7 +5,7 @@ import com.kursach.models.ProductCart;
 
 import java.util.List;
 
-public interface OrdersService {
+public interface OrdersService extends Service {
     void buyServices(List<ProductCart> productCarts, Integer userId);
     void deleteBySeller(Integer userId, Long productId);
     void deleteByBuyer(Integer userId, Long productId);

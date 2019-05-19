@@ -114,26 +114,20 @@
         <h1 style="margin-right: 10px">Продажа услуг</h1>
     </div>
     <div class="row">
-
-        <div class="card shadow" style="width: 16.85rem; margin-right: 15px; margin-bottom: 15px; cursor: pointer" onclick="toggle()">
-            <div class="card-body">
-                <h5 class="card-title" style="color: #495057">Добавить услугу
-                </h5>
-                <i class="fa fa-plus-square-o fa-6" aria-hidden="true"></i>
-<#--                <img src="/pictures/logo.png" height="100px" style="margin-bottom: 15px">-->
-<#--                <h6 class="card-subtitle mb-2">${product.activity}-->
-<#--                </h6>-->
-<#--                <h6 class="card-subtitle mb-2 text-muted"> Price: ${product.price} Rub.-->
-<#--                </h6>-->
-<#--                <button type="button" class="btn btn-outline-secondary-1 btn-block"-->
-<#--                        onclick="addToCart(${product.id}, getCookie('vk_id'))">Add to cart-->
-<#--                </button>-->
-            </div>
-        </div>
-        <#list products as product>
-            <div class="card shadow" style="width: 16.85rem; margin-right: 15px; margin-bottom: 15px" >
+        <#if create??>
+            <div class="card shadow" style="width: 16.85rem; margin-right: 15px; margin-bottom: 15px; cursor: pointer"
+                 onclick="toggle()">
                 <div class="card-body">
-                    <h5 class="card-title" style="color: #495057" >${product.name}
+                    <h5 class="card-title" style="color: #495057">Добавить услугу
+                    </h5>
+                    <img src="/pictures/plus.png" height="150px" style="display: block; margin-left: auto; margin-right: auto; vertical-align: middle !important; margin-top: 15%;">
+                </div>
+            </div>
+        </#if>
+        <#list products as product>
+            <div class="card shadow" style="width: 16.85rem; margin-right: 15px; margin-bottom: 15px">
+                <div class="card-body">
+                    <h5 class="card-title" style="color: #495057">${product.name}
                     </h5>
                     <img src="${product.avatar} " height="100px" style="margin-bottom: 15px">
                     <h6 class="card-subtitle mb-2">${product.activity}
@@ -141,57 +135,62 @@
                     <h6 class="card-subtitle mb-2 text-muted"> Price: ${product.price} Rub.
                     </h6>
                     <button type="button" class="btn btn-outline-secondary-1 btn-block"
-                            onclick="addToCart(${product.id})">Add to cart</button>
+                            onclick="addToCart(${product.id})">Add to cart
+                    </button>
                 </div>
             </div>
         </#list>
     </div>
     <#if orders??>
-    <div class="row">
-        <h1 style="margin-right: 10px">Заказы</h1>
-    </div>
-    <div class="row">
+        <div class="row">
+            <h1 style="margin-right: 10px">Заказы</h1>
+        </div>
+        <div class="row">
 
-        <#list orders as product>
-            <div id="order${product.id}" class="card shadow" style="width: 16.85rem; margin-right: 15px; margin-bottom: 15px" >
-                <div class="card-body">
-                    <h5 class="card-title" style="color: #495057" >${product.name}
-                    </h5>
-                    <img src="${product.avatar} " height="100px" style="margin-bottom: 15px">
-                    <h6 class="card-subtitle mb-2">${product.activity}
-                    </h6>
-                    <h6 class="card-subtitle mb-2 text-muted"> Price: ${product.price} Rub.
-                    </h6>
-                    <button type="button" class="btn btn-outline-secondary-1 btn-block"
-                            onclick="deleteFromBuyer(${product.id})">Delete order</button>
+            <#list orders as product>
+                <div id="order${product.id}" class="card shadow"
+                     style="width: 16.85rem; margin-right: 15px; margin-bottom: 15px">
+                    <div class="card-body">
+                        <h5 class="card-title" style="color: #495057">${product.name}
+                        </h5>
+                        <img src="${product.avatar} " height="100px" style="margin-bottom: 15px">
+                        <h6 class="card-subtitle mb-2">${product.activity}
+                        </h6>
+                        <h6 class="card-subtitle mb-2 text-muted"> Price: ${product.price} Rub.
+                        </h6>
+                        <button type="button" class="btn btn-outline-secondary-1 btn-block"
+                                onclick="deleteFromBuyer(${product.id})">Delete order
+                        </button>
+                    </div>
                 </div>
-            </div>
-        </#list>
-    </div>
+            </#list>
+        </div>
     </#if>
     <#if sales??>
-    <div class="row">
-        <h1 style="margin-right: 10px">Продажи</h1>
-    </div>
-    <div class="row">
+        <div class="row">
+            <h1 style="margin-right: 10px">Продажи</h1>
+        </div>
+        <div class="row">
 
 
-        <#list sales as product>
-            <div id="sale${product.id}" class="card shadow" style="width: 16.85rem; margin-right: 15px; margin-bottom: 15px" >
-                <div class="card-body">
-                    <h5 class="card-title" style="color: #495057" >${product.name}
-                    </h5>
-                    <img src="${product.avatar} " height="100px" style="margin-bottom: 15px">
-                    <h6 class="card-subtitle mb-2">${product.activity}
-                    </h6>
-                    <h6 class="card-subtitle mb-2 text-muted"> Price: ${product.price} Rub.
-                    </h6>
-                    <button type="button" class="btn btn-outline-secondary-1 btn-block"
-                            onclick="deleteFromSeller(${product.id})">Delete sale</button>
+            <#list sales as product>
+                <div id="sale${product.id}" class="card shadow"
+                     style="width: 16.85rem; margin-right: 15px; margin-bottom: 15px">
+                    <div class="card-body">
+                        <h5 class="card-title" style="color: #495057">${product.name}
+                        </h5>
+                        <img src="${product.avatar} " height="100px" style="margin-bottom: 15px">
+                        <h6 class="card-subtitle mb-2">${product.activity}
+                        </h6>
+                        <h6 class="card-subtitle mb-2 text-muted"> Price: ${product.price} Rub.
+                        </h6>
+                        <button type="button" class="btn btn-outline-secondary-1 btn-block"
+                                onclick="deleteFromSeller(${product.id})">Delete sale
+                        </button>
+                    </div>
                 </div>
-            </div>
-        </#list>
-    </div>
+            </#list>
+        </div>
     </#if>
 </div>
 

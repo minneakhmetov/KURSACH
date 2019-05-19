@@ -14,8 +14,8 @@ import com.kursach.repositories.UserRepository;
 import com.kursach.utils.VKAuthService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
-import org.springframework.stereotype.Service;
 
 import java.util.UUID;
 
@@ -25,15 +25,24 @@ import static com.kursach.dto.UserDto.from;
 public class LoginServiceImpl implements LoginService {
     @Autowired
     @Qualifier("userRepositoryHibernateImpl")
-    private UserRepository repository;
+    private UserRepository userRepository;
 
     @Autowired
     private AuthRepository authRepository;
 
+    @Value("${vk.appId}")
+    private Integer appId;
+
+    @Value("${vk.redirectUrl}")
+    private String redirectUrl;
+
+    @Value("${vk.clientSecret}")
+    private String clientSecret;
+
     @Override
     public UserDto loginOrRegister(String code){
-        VKAuthService vk = new VKAuthService(code);
-        User user = repository.readOne(Integer.valueOf(vk.getUserId()));
+        VKAuthService vk = new VKAuthService(appId, clientSecret, redirectUrl, code);
+        User user = userRepository.readOne(vk.getUserId());
         if (user == null){
             UserDto dto = vk.auth();
             user  = User.builder()
@@ -42,7 +51,7 @@ public class LoginServiceImpl implements LoginService {
                     .photoURL(dto.getPhotoURL())
                     .vkId(dto.getVkId())
                     .build();
-            repository.create(user);
+            userRepository.create(user);
         }
         String auth = UUID.randomUUID().toString();
         authRepository.save(Auth.builder().userId(user.getVkId()).auth(auth).build());
@@ -50,13 +59,13 @@ public class LoginServiceImpl implements LoginService {
     }
 
     @Override
-    public void logout(Integer vkId) {
-        authRepository.delete(vkId);
+    public void logout(Auth auth) {
+        authRepository.delete(auth);
     }
 
     @Override
     public UserDto getUser(Integer vkId){
-        return from(repository.readOne(vkId));
+        return from(userRepository.readOne(vkId));
     }
 
     @Override

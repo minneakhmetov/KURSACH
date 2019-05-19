@@ -19,8 +19,8 @@ import java.util.List;
 
 @Component
 public class ProductRepositoryImpl implements ProductRepository {
+    
     private JdbcTemplate jdbcTemplate;
-
 
     @Autowired
     public ProductRepositoryImpl(DriverManagerDataSource dataSource) {
@@ -44,7 +44,7 @@ public class ProductRepositoryImpl implements ProductRepository {
             "DELETE from product";
 
     private static final String SQL_FIND =
-            "select * from product join user_table on product.user_id = user_table.vk_id where (position(upper(?) in (upper(name), upper(activity)) )) > 0";
+            "select * from product join user_table on product.user_id = user_table.vk_id where (position(upper(?) in (upper(name)))) > 0 or (position(upper(?) in (upper(surname)))) > 0 OR (position(upper(?) in (upper(activity)))) >0";
 
 
     private RowMapper<Product> rowMapper = new RowMapper<Product>() {
@@ -78,7 +78,7 @@ public class ProductRepositoryImpl implements ProductRepository {
     }
 
     public List<Product> find(String string){
-        return jdbcTemplate.query(SQL_FIND, rowMapper, string);
+        return jdbcTemplate.query(SQL_FIND, rowMapper, string, string, string);
     }
 
 

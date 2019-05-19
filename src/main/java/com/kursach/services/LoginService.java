@@ -9,9 +9,9 @@ package com.kursach.services;
 import com.kursach.dto.UserDto;
 import com.kursach.models.Auth;
 
-public interface LoginService {
+public interface LoginService extends Service {
     UserDto loginOrRegister(String code);
-    void logout(Integer vkId);
+    void logout(Auth auth);
     UserDto getUser(Integer vkId);
     boolean isExistByCookie(Auth auth);
 }

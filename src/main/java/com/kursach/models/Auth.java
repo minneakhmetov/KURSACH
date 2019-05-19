@@ -1,13 +1,11 @@
 package com.kursach.models;
 
-import lombok.Builder;
-import lombok.EqualsAndHashCode;
-import lombok.Getter;
-import lombok.Setter;
+import lombok.*;
 
 import java.util.Objects;
 
-
+@AllArgsConstructor
+@NoArgsConstructor
 @Getter
 @Setter
 @Builder
@@ -15,4 +13,8 @@ import java.util.Objects;
 public class Auth {
     Integer userId;
     String auth;
+
+    public boolean isNotNull(){
+        return !(userId == null || auth == null);
+    }
 }

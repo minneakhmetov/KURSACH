@@ -8,7 +8,11 @@ package com.kursach.repositories;
 
 import com.kursach.models.User;
 
-public interface UserRepository {
+import javax.transaction.Transactional;
+
+
+public interface UserRepository extends Repository{
+    @Transactional
     void create(User user);
     User readOne(Integer id);
 }

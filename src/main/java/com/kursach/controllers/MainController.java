@@ -1,17 +1,15 @@
 package com.kursach.controllers;
 
-import com.kursach.app.Constants;
 import com.kursach.dto.ProductCartDto;
 import com.kursach.dto.UserDto;
 import com.kursach.forms.ServiceForm;
+import com.kursach.models.Auth;
 import com.kursach.models.Order;
 import com.kursach.models.Product;
 import com.kursach.models.ProductCart;
-import com.kursach.services.CartService;
-import com.kursach.services.LoginService;
-import com.kursach.services.OrdersService;
-import com.kursach.services.ProductService;
+import com.kursach.services.*;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -41,21 +39,36 @@ public class MainController {
     @Autowired
     private OrdersService ordersService;
 
+    @Autowired
+    private AuthService authService;
+
+    @Value("${vk.appId}")
+    private Integer appId;
+
+    @Value("${vk.redirectUrl}")
+    private String redirectUrl;
+
     @GetMapping({"/main", ""})
     public String getMain(ModelMap modelMap, HttpServletRequest httpServletRequest) {
 
         Cookie[] cookies = httpServletRequest.getCookies();
-        if(cookies != null) {
+        Auth auth = new Auth();
+        if (cookies != null) {
             for (Cookie cookie : cookies) {
-                if (cookie.getName().equals("vk_id")) {
-                    List<Order> buyer = ordersService.showByBuyer(Integer.valueOf(cookie.getValue()));
-                    List<Order> seller = ordersService.showBySeller(Integer.valueOf(cookie.getValue()));
-                    if (buyer.size() != 0)
-                        modelMap.addAttribute("orders", buyer);
-                    if (seller.size() != 0)
-                        modelMap.addAttribute("sales", seller);
-                }
+                if (cookie.getName().equals("vk_id"))
+                    auth.setUserId(Integer.valueOf(cookie.getValue()));
+                if (cookie.getName().equals("auth"))
+                    auth.setAuth(cookie.getValue());
             }
+        }
+        if(auth.isNotNull() && authService.isExistByCookie(auth)) {
+            modelMap.addAttribute("create", true);
+            List<Order> buyer = ordersService.showByBuyer(auth.getUserId());
+            List<Order> seller = ordersService.showBySeller(auth.getUserId());
+            if (buyer.size() != 0)
+                modelMap.addAttribute("orders", buyer);
+            if (seller.size() != 0)
+                modelMap.addAttribute("sales", seller);
         }
 
         modelMap.addAttribute("products", from(productService.getAll()));
@@ -64,8 +77,8 @@ public class MainController {
 
     @GetMapping("/auth")
     public String authRedirect() {
-        return "redirect:https://oauth.vk.com/authorize?client_id=" + Constants.APP_ID +
-                "&display=page&redirect_uri=" + Constants.REDIRECT_URI + "/login" +
+        return "redirect:https://oauth.vk.com/authorize?client_id=" + appId +
+                "&display=page&redirect_uri=" + redirectUrl + "/login" +
                 "&scope=friends&response_type=code&v=5.87";
     }
 
@@ -104,8 +117,8 @@ public class MainController {
     }
 
     @GetMapping("/logout")
-    public String logout(@CookieValue("vk_id") Integer vkId, HttpServletRequest request, HttpServletResponse response) {
-        loginService.logout(vkId);
+    public String logout(@CookieValue("vk_id") Integer vkId, @CookieValue("auth") String auth, HttpServletRequest request, HttpServletResponse response) {
+        loginService.logout(Auth.builder().userId(vkId).auth(auth).build());
         Cookie[] cookies = request.getCookies();
         for (int i = 0; i < cookies.length; i++) {
             if (cookies[i].getName().equals("vk_id")) {

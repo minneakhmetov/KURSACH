@@ -10,7 +10,7 @@ import com.kursach.models.Product;
 
 import java.util.List;
 
-public interface ProductRepository {
+public interface ProductRepository extends Repository {
     void create(Product product);
     void delete();
     Product readOne(Long id);

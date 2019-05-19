@@ -12,13 +12,15 @@ function addToCart(productId) {
     xhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
     xhr.send(body);
 }
-
-function getCookie(name) {
-    var matches = document.cookie.match(new RegExp(
-        "(?:^|; )" + name.replace(/([\.$?*|{}\(\)\[\]\\\/\+^])/g, '\\$1') + "=([^;]*)"
-    ));
-    return matches ? decodeURIComponent(matches[1]) : undefined;
+function deleteFromCart(productId, price) {
+    total -= price;
+    var xhr = new XMLHttpRequest();
+    var body = 'productId=' + productId;
+    xhr.open("POST", '/deletecart', true);
+    xhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
+    xhr.send(body);
 }
+
 
 
 function sendProductId() {
@@ -37,10 +39,10 @@ function sendProductId() {
 
             contentTableHTML += '<div class="row">';
             contentTableHTML += '<div class="col-md-2">';
-            contentTableHTML += '<img src="' + data[i].avatar + '" height="50px" style="margin-bottom: 15px">';
+            contentTableHTML += '<img src="' + data[i].user.photoURL + '" height="50px" style="margin-bottom: 15px">';
             contentTableHTML += '</div>';
             contentTableHTML += '<div class="col-md-6">';
-            contentTableHTML += '<h5 class="card-title" style="color: #495057">' + data[i].name;
+            contentTableHTML += '<h5 class="card-title" style="color: #495057">' + data[i].user.name + ' ' + data[i].user.surname;
             contentTableHTML += "</h5>";
             contentTableHTML += '<h6 class="card-subtitle mb-2 text-muted"> Price: ' + data[i].price + ' Rub. </h6>';
             contentTableHTML += '</div>';
@@ -76,16 +78,6 @@ function sendProductId() {
     });
 }
 
-function deleteFromCart(productId, price) {
-    total -= price;
-    var xhr = new XMLHttpRequest();
-    var body = 'productId=' + productId;
-    xhr.open("POST", '/deletecart', true);
-    xhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
-    xhr.send(body);
-}
-
-
 function inputs() {
     var contentHTML = '<h3>What payment type do you prefer?</h3>';
     contentHTML += '<input type="hidden" name="receiver" value="41001698207752">';
@@ -100,7 +92,7 @@ function inputs() {
     contentHTML += '<input type="hidden" name="need-email" value="false">';
     contentHTML += '<input type="hidden" name="need-phone" value="false">';
     contentHTML += '<input type="hidden" name="need-address" value="false">';
-    contentHTML += '<input type="hidden" name="successURL" value="http://localhost:8000/main">';
+    contentHTML += '<input type="hidden" name="successURL" value="http://localhost:8000/checkouted">';
     contentHTML += '<div class="btn-group btn-group-toggle btn-block" data-toggle="buttons">';
     contentHTML += '<label class="btn btn-outline-secondary-2 btn-block" style="margin-top: 8px">';
     contentHTML += '<input type="radio" name="paymentType" value="PC" id="option1" autocomplete="off" checked>Yandex.Money';

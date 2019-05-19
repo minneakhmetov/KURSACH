@@ -6,12 +6,14 @@ import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.datasource.DriverManagerDataSource;
+import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.List;
 
-@Service
+@Component
 public class AuthRepositoryImpl implements AuthRepository {
 
     private JdbcTemplate jdbcTemplate;
@@ -22,15 +24,15 @@ public class AuthRepositoryImpl implements AuthRepository {
     }
 
     private static final String SAVE = "INSERT INTO auth_table (user_id, auth) values (?, ?)";
-    private static final String DELETE = "DELETE FROM auth_table where user_id = ?";
+    private static final String DELETE = "DELETE FROM auth_table where user_id = ? and auth = ?";
     private static final String READ = "SELECT * FROM auth_table WHERE user_id = ?";
 
     public void save(Auth auth){
         jdbcTemplate.update(SAVE, auth.getUserId(), auth.getAuth());
     }
 
-    public void delete(Integer vkId){
-        jdbcTemplate.update(DELETE, vkId);
+    public void delete(Auth auth){
+        jdbcTemplate.update(DELETE, auth.getUserId(), auth.getAuth());
     }
 
     RowMapper<Auth> rowMapper = new RowMapper<Auth>() {
@@ -43,9 +45,9 @@ public class AuthRepositoryImpl implements AuthRepository {
         }
     };
 
-    public Auth read(Integer vkId){
+    public List<Auth> read(Integer vkId){
         try {
-            return jdbcTemplate.queryForObject(READ, rowMapper, vkId);
+            return jdbcTemplate.query(READ, rowMapper, vkId);
         } catch (EmptyResultDataAccessException e){
             return null;
         }
